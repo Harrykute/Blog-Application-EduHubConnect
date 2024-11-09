@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -27,6 +28,7 @@ public class CategoryController {
 	@Autowired
 	private CategoryService categoryService;
 	
+	@PreAuthorize("hasAuthority('ADMIN')")
 	@PostMapping("/")
 	public ResponseEntity<CategoryDto> createCategory(@Valid @RequestBody CategoryDto categoryDto){
 		
@@ -35,6 +37,7 @@ public class CategoryController {
 		return new ResponseEntity<CategoryDto>(createdCategoryDto,HttpStatus.CREATED); 
 	}
 	
+	@PreAuthorize("hasAuthority('ADMIN')")
 	@PutMapping("/{categoryId}")
 	public ResponseEntity<CategoryDto> updateCategory(@Valid @RequestBody CategoryDto categoryDto,@PathVariable("categoryId") Integer cateId){
 		
@@ -44,6 +47,7 @@ public class CategoryController {
 		
 	}
 	
+	@PreAuthorize("hasAuthority('ADMIN')")
 	@DeleteMapping("/{categoryId}")
 	public ResponseEntity<ApiResponse> deleteCategory(@PathVariable("categoryId") Integer categoryId){
         
@@ -52,6 +56,7 @@ public class CategoryController {
 		return new ResponseEntity<ApiResponse>(new ApiResponse("category deleted successfully",false),HttpStatus.OK);
 	}
 	
+	@PreAuthorize("hasAuthority('USER') and hasAuthority('ADMIN')")
 	@GetMapping("/{categoryId}")
 	public ResponseEntity<CategoryDto> getSingleCategory(@PathVariable("categoryId") Integer categoryId){
 		CategoryDto categoryDto = this.categoryService.getSingleCategory(categoryId);
@@ -59,6 +64,7 @@ public class CategoryController {
 		return new ResponseEntity<CategoryDto>(categoryDto,HttpStatus.OK);
 	}
 	
+	@PreAuthorize("hasAuthority('USER') and hasAuthority('ADMIN')")
 	@GetMapping("/")
 	public ResponseEntity<List<CategoryDto>> getCategories(){
 		List<CategoryDto> categories = this.categoryService.getCategories();
