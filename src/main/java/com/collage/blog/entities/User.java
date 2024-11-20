@@ -57,6 +57,9 @@ public class User implements UserDetails{
 	inverseJoinColumns = @JoinColumn(name="role",referencedColumnName = "id")
 	)
 	private Set<Role> roles = new HashSet<>();
+	
+	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	private Set<PostLike> likes = new HashSet<>();
 
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {

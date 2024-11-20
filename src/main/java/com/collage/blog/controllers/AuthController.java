@@ -2,6 +2,7 @@ package com.collage.blog.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -26,8 +27,17 @@ public class AuthController {
 
 	@PostMapping("/login")
 	public String login(@RequestBody UserDto userDto){
+		
 		System.out.println(userDto);
 		return userService.verify(userDto);
+		
+	}
+	
+	@PostMapping("/register")
+	public ResponseEntity<UserDto> createUser(@RequestBody UserDto userDto){
+	    UserDto createdUser = this.userService.registerNewUser(userDto);
+        return new ResponseEntity<UserDto>(createdUser,HttpStatus.CREATED);
+        
 	}
 	
 	

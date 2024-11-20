@@ -1,6 +1,7 @@
 package com.collage.blog.config;
 
 import java.io.IOException;
+import java.util.Arrays;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -47,6 +48,9 @@ public class JWTFilter extends OncePerRequestFilter{
 		if(userName !=null && SecurityContextHolder.getContext().getAuthentication() == null) {
 			UserDetails userDetails = context.getBean(MyUserDetailsService.class).loadUserByUsername(userName);
 			if(jwtService.validateToken(token,userDetails)) {
+				
+				
+				System.out.println(userDetails.getAuthorities());
 				UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(userDetails,null,userDetails.getAuthorities()); 
 				authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 				SecurityContextHolder.getContext().setAuthentication(authToken);

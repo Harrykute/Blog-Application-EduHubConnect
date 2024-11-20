@@ -50,4 +50,14 @@ public class Post {
 	
 	@OneToMany(mappedBy = "post",cascade = CascadeType.ALL)
 	private Set<Comment> comments=new HashSet<>();
+	
+	 private Integer likeCount=Integer.valueOf(0); 
+	
+	@OneToMany(mappedBy="post",cascade = CascadeType.ALL)
+	private Set<PostLike> like;
+	
+	public void incrementLikeCount() {
+        this.likeCount++;
+    }
+	
 }
