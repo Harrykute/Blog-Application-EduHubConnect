@@ -35,7 +35,7 @@ public class UserController {
 	private UserService userService;
 	
 	//Post 
-	
+	@PreAuthorize("hasAuthority('ADMIN')")
 	@PostMapping("/")
 	public ResponseEntity<UserDto> createUser(@Valid @RequestBody UserDto userDto){
 		UserDto createdUserDto = this.userService.createUser(userDto);
@@ -43,6 +43,7 @@ public class UserController {
 	}
 
 	//put 
+	@PreAuthorize("hasAuthority('USER') and hasAuthority('ADMIN')")
 	@PutMapping("/{userId}")
 	public ResponseEntity<UserDto> updateUser(@Valid @RequestBody UserDto userDto,@PathVariable Integer userId){
 		UserDto updatedUserDto = this.userService.updateUser(userDto, userId);
@@ -58,11 +59,13 @@ public class UserController {
 	}
 	
 	//Get
+	@PreAuthorize("hasAuthority('USER') and hasAuthority('ADMIN')")
 	@GetMapping("/{userId}")
 	public ResponseEntity<UserDto> getSingleUser(@PathVariable("userId") Integer uId){
 		return ResponseEntity.ok(this.userService.getUserById(uId));
 	}
 	
+	@PreAuthorize("hasAuthority('ADMIN')")
 	@GetMapping("/")
 	public ResponseEntity<List<UserDto>> getAllUsers() {
 		

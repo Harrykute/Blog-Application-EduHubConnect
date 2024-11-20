@@ -3,6 +3,7 @@ package com.collage.blog.services.impl;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -10,9 +11,12 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.collage.blog.config.ApplicationConstant;
+import com.collage.blog.entities.Role;
 import com.collage.blog.entities.User;
 import com.collage.blog.exception.ResourceNotFoundException;
 import com.collage.blog.payloads.UserDto;
+import com.collage.blog.repositories.RoleRepo;
 import com.collage.blog.repositories.UserRepo;
 import com.collage.blog.services.JWTService;
 import com.collage.blog.services.UserService;
@@ -33,6 +37,12 @@ public class UserServiceImpl implements UserService{
 	
 	@Autowired
 	private JWTService jwtService;
+	
+	@Autowired
+	private RoleRepo roleRepo;
+	
+	@Autowired
+	private ModelMapper modelMapper;
 	
 	@Override
 	public UserDto createUser(UserDto userDto) {
@@ -119,5 +129,23 @@ public class UserServiceImpl implements UserService{
 		}
 
 		}
+
+	@Override
+	public UserDto registerNewUser(UserDto userDto) {
+		
+		User user = this.dtoToUser(userDto);
+		
+		user.setPassword(encoder.encode(userDto.getPassword()));
+		
+		Role role = this.roleRepo.findById(ApplicationConstant.ROLE_USER).orElseThrow(()-> new ResourceNotFoundException("Role","roleId", ApplicationConstant.ROLE_USER));
+		
+		user.getRoles().add(role);
+		
+		User saveUser = this.userRepo.save(user);
+		
+		UserDto createdUser = this.modelMapper.map(saveUser,UserDto.class);
+		
+		return createdUser;
+	}
 
 }
